@@ -7,11 +7,11 @@ const login=(loginData)=>{
     {
         if(validUser.password === loginData.password)
         {
-            return { status: true } 
+            return { status: true, message:"Login Successfull", statusCode:200 } 
         }
-        return { status: false, message:" Invalid Password"}
+        return { status: false, message:"Wrong Password", statusCode:401}
     }
-    return { status:false, message:"Invalid EmailId"};
+    return { status:false, message:"Email Id Not Found", statusCode:401};
 }
 const register=(registrationData)=>{
     const users=loadUsers();
@@ -42,7 +42,7 @@ const register=(registrationData)=>{
 
 const remove=(userData)=>{
     const users=loadUsers();
-    const isUser=users.find((user)=> user.id ===userData.id)
+    const isUser=users.find((user)=> user.email ===userData.email)
     if(isUser)
     {
         try
@@ -54,7 +54,7 @@ const remove=(userData)=>{
         {
             return {status: false,message:error, statusCode:409}
         }
-        return {status:true,message:"User Deleted SuccessFully"}
+        return {status:true,message:"User Deleted SuccessFully",statusCode:200}
     }
     else{
         return {stats:false, message:"User Does Not Exists",statusCode:409}

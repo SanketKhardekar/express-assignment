@@ -41,7 +41,34 @@ function validSignupData(req, res, next) {
     return;
   }
 }
+function validLoginData(req,res,next){
+  if(!req.body || !req.body.email  || !req.body.password || req.body.email.trim().length <= 0 || req.body.password.trim().length <= 0)
+  {
+    res.status(400).send("Please Provide both fields email, password");
+  }
+  if (!emailValidator(req.body.email)) {
+    res.status(400).send("Enter Valid Email");
+  }
+  else
+  {
+    next();
+    return;
+  }
+}
 
+function validUserEmail(req,res,next){
+  if(!req.query.email || req.query.email.trim().length <= 0 || !emailValidator(req.query.email))
+  {
+    res.status(400).send("Please Provide Valid Emailid");
+  }
+  else
+  {
+    next()
+    return;
+  }
+}
 module.exports = {
   validSignupData,
+  validLoginData,
+  validUserEmail,
 };
