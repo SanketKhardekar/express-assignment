@@ -47,7 +47,7 @@ const remove=(userData)=>{
     {
         try
         {
-            let updatedUsers=users.filter((user)=> user.id !== userData.id)
+            let updatedUsers=users.filter((user)=> user.email !== userData.email)
             saveUser(updatedUsers)
         }
         catch(error)
@@ -61,6 +61,7 @@ const remove=(userData)=>{
     }
 }
 const update=(email,userData)=>{
+    console.log(email);
     const users=loadUsers();
     let index=users.findIndex((user)=> user.email === email)
     if(index !== -1)

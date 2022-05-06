@@ -4,6 +4,7 @@ const regex = {
   name: /^[a-z A-Z]{2,30}/,
   phone: /^\d{10}$/g,
 };
+
 const emailValidator = (email) => {
   let valid=regex.email.test(email.trim());
   return valid;
