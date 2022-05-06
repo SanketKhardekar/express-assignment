@@ -60,22 +60,26 @@ const remove=(userData)=>{
         return {stats:false, message:"User Does Not Exists",statusCode:409}
     }
 }
-const update=(userData)=>{
+const update=(email,userData)=>{
     const users=loadUsers();
-    const isValidUser=users.find((user)=> user.id ===userData.id)
-    if(isValidUser)
+    let index=users.findIndex((user)=> user.email === email)
+    if(index !== -1)
     {
         try
         {
-            let updatedUsers=users.filter((user)=>user.id ===userData.id)
-            updatedUsers.push(userData)
-            saveUser(updatedUsers)
+            users[index]={
+                email: userData.email ? userData.email : users[index].email,
+                name: userData.name ? userData.name : users[index].name,
+                phone: userData.phone ? userData.phone : users[index].phone,
+                password: users[index].password,
+            }
+            saveUser(users);
         }
         catch(error)
         {
             return {status: false,message:error, statusCode:409}
         }
-        return {status:true,message:`User Updated SuccessFully` }
+        return {status:true,message:`User Updated SuccessFully`, statusCode:200}
     }
     else
     {
