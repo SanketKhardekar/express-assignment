@@ -78,12 +78,12 @@ function validUserEmail(req, res, next) {
   }
 }
 function validUpdateData(req, res, next) {
-  if (!req.body || (!req.body.email && !req.body.name && !req.body.phone)) {
+  if (!req.body || (!req.body.name && !req.body.phone)) {
     res.status(400).send("Provide atleast data to update");
   } 
-  else if(req.body.email && !emailValidator(req.body.email)) 
+  else if(req.body.email) 
   {
-      res.status(400).send("Enter Valid Updated Email");
+      res.status(400).send("Cannot Update Email!!!");
   }
   else if (req.body.name && !nameValidator(req.body.name)) {
       res
