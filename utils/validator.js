@@ -99,6 +99,7 @@ function validUpdateData(req, res, next) {
 }
 module.exports = {
   validSignupData,
+  passwordValidator,
   validLoginData,
   validUserEmail,
   validUpdateData,
