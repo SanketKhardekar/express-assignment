@@ -3,11 +3,14 @@ const mongoose = require("mongoose");
 const mongoConfig = require("../config/config");
 const validator = require("../utils/validator");
 const bcrypt = require("bcrypt");
+
+//Database Connection
 mongoose.connect(mongoConfig.DB_URL);
 mongoose.connection.on("connected", () => {
   console.log("DB CONNECTED");
 });
 
+//Error Handling
 const handlerDuplicateField = (err) => {
   let message;
   const keys = Object.keys(err.keyValue);
@@ -24,6 +27,7 @@ const handleValidationError = (err) => {
   return message;
 };
 
+//Registration Controller
 const handleRegistration = async (req, res) => {
   try {
     if (!req.body.password) {
@@ -62,6 +66,7 @@ const handleRegistration = async (req, res) => {
   }
 };
 
+//Login Controller
 const handleLogin = async (req, res) => {
   try {
     if (!req.body.email || !req.body.password) {
@@ -73,17 +78,28 @@ const handleLogin = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if(user === null)
     {
-        res.status().json({sucesss: false, message:"User Not Found"});
+        res.status(401).json({sucesss: false, message:"User Not Found"});
         return;
     }
-    console.log(user);
-    res.status(200).json({ sucesss: true, id: user._id });
+    if(!(await bcrypt.compare(req.body.password,user.password)))
+    {
+      res.status(401).json({sucesss:false,message:"Incorrect Password"});
+      return;
+    }
+    res.status(200).json({ sucesss: true,message:"Login SucessFull", id: user._id });
+    return;
   } catch (err) {
-    res.status(400).json({ sucesss: false, message: err.message });
+    res.status(400).json({ sucesss: false, message: "Something Went Wrong" });
   }
 };
 
+//Delete User
+const handleDelete=async(req,res)=>{
+    
+}
+
 module.exports = {
   handleRegistration,
+  handleDelete,
   handleLogin,
 };
