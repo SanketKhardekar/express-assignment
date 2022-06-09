@@ -39,7 +39,7 @@ const handleRegistration = async (req, res) => {
     } else {
       if (!validator.passwordValidator(req.body.password)) {
         res.status(400).json({
-          sucesss: false,
+          success: false,
           message:
             "Enter Valid Password combination of alphabets, at least one special character, and at least one digit with minimum of 8 and maximum of 16 characters.",
         });
@@ -56,12 +56,12 @@ const handleRegistration = async (req, res) => {
     const result = await user.save();
     res
       .status(200)
-      .json({ message: "Resgistration SuccessFull", user_id: result._id });
+      .json({ success: true,message: "Resgistration SuccessFull", user_id: result._id });
   } catch (err) {
     let message = "Something Went Wrong";
     if (err.code === 11000) message = handlerDuplicateField(err);
     if (err.name === "ValidationError") message = handleValidationError(err);
-    res.status(400).json({ sucesss: false, message: message });
+    res.status(400).json({ success: false, message: message });
     return;
   }
 };
@@ -72,31 +72,54 @@ const handleLogin = async (req, res) => {
     if (!req.body.email || !req.body.password) {
       res
         .status(400)
-        .json({ sucesss: false, message: "Please Provide Email And Password" });
+        .json({ success: false, message: "Please Provide Email And Password" });
       return;
     }
-    const user = await User.findOne({ email: req.body.email });
-    if(user === null)
-    {
-        res.status(401).json({sucesss: false, message:"User Not Found"});
-        return;
-    }
-    if(!(await bcrypt.compare(req.body.password,user.password)))
-    {
-      res.status(401).json({sucesss:false,message:"Incorrect Password"});
+    const user = await User.findOne({ email: req.body.email, status:true });
+    if (user === null) {
+      res.status(401).json({ success: false, message: "User Not Found" });
       return;
     }
-    res.status(200).json({ sucesss: true,message:"Login SucessFull", id: user._id });
+    if (!(await bcrypt.compare(req.body.password, user.password))) {
+      res.status(401).json({ success: false, message: "Incorrect Password" });
+      return;
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Login SucessFull", id: user._id });
     return;
   } catch (err) {
-    res.status(400).json({ sucesss: false, message: "Something Went Wrong" });
+    res.status(400).json({ success: false, message: "Something Went Wrong" });
   }
 };
 
-//Delete User
-const handleDelete=async(req,res)=>{
-    
+const getUser=async(id)=>{
+  const user= await User.findOne({_id:id, status:true});
+  return user;
 }
+
+//Delete User
+const handleDelete = async (req, res) => {
+  try {
+    if (!req.query.id) {
+      res.status(400).json({ success: false, message: "Please Provide Id" });
+      return;
+    }
+    const user= await getUser(req.query.id);
+    if(user === null)
+    {
+      res.status(400).json({success:false, message: "User Not Found" })
+      return;
+    }
+    user.status=false;
+    user.save();
+    res.status(200).json({success:true, message:"User Deleted Successfully" })
+    return;
+  } catch (err) {
+    res.status(400).json({success:false, message: err.message })
+    return;
+  }
+};
 
 module.exports = {
   handleRegistration,

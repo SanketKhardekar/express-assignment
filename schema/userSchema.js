@@ -35,6 +35,10 @@ const userSchema= new mongoose.Schema({
             validator:phone => regex.phone.test(phone),
             message: props =>`(${props.value}) Enter Valid 10 Digit Phone Number`
         }
+    },
+    status:{
+        type:Boolean,
+        default:true,
     }
 },{
     timestamps:true,
