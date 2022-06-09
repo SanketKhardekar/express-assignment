@@ -18,13 +18,11 @@ const userSchema= new mongoose.Schema({
     },
     password:{
         type:String,
-        cast:false,
         required:[true,'Please Provide Password']
     },
     name: {
         type:String,
         required:[true,'Please Provide Name'],
-        cast:false,
         validate:{
             validator:name=> regex.name.test(name),
             message: props=> `(${props.value}) Enter Valid Name having min 2 and max 30 alphabets`
@@ -32,7 +30,6 @@ const userSchema= new mongoose.Schema({
     },
     phone:{
         type: Number,
-        cast:false,
         required:[true,'Please Provide Phone Number'],
         validate:{
             validator:phone => regex.phone.test(phone),

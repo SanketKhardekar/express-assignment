@@ -3,18 +3,17 @@ const router=express.Router();
 
 const validator= require('../utils/validator.js');
 const user= require('../middleware/user.js');
+const { handleRegistration, handleLogin } = require('../controller/userController.js');
 
 //Signup Route
-router.post('/signup',validator.validSignupData,(req,res)=>{
-    const response=user.register(req.body)
-    res.status(response.statusCode).send(response.message)
-})
+router.post('/signup',handleRegistration);
 
 //Login Route
-router.post('/login',validator.validLoginData,(req,res)=>{
-    const response=user.login(req.body)
-    res.status(response.statusCode).send(response.message)
-})
+ router.post('/login',handleLogin);
+ //validator.validLoginData,(req,res)=>{
+//     const response=user.login(req.body)
+//     res.status(response.statusCode).send(response.message)
+// })
 
 //Delete And Update User Route
 router.route('/').delete(validator.validUserEmail,(req,res)=>{
