@@ -102,7 +102,7 @@ const getUser=async(id)=>{
 const handleDelete = async (req, res) => {
   try {
     if (!req.query.id) {
-      res.status(400).json({ success: false, message: "Please Provide Id" });
+      res.status(400).json({ success: false, message: "Please Provide Id For Deletion" });
       return;
     }
     const user= await getUser(req.query.id);
@@ -116,13 +116,40 @@ const handleDelete = async (req, res) => {
     res.status(200).json({success:true, message:"User Deleted Successfully" })
     return;
   } catch (err) {
-    res.status(400).json({success:false, message: err.message })
+    res.status(400).json({success:false, message: "Something Went Wrong" })
     return;
   }
 };
+const handleUpdate=async(req,res)=>{
+  try{
+    if (!req.query.id) {
+      res.status(400).json({ success: false, message: "Please Provide Id For Deletion" });
+      return;
+    }
+    if(req.body.email)
+    {
+      res.status(401).json({ success: false, message: "Email Cannot be Updated" });
+      return;
+    }
+    const user= await User.findByIdAndUpdate(req.query.id,req.body,{ runValidators: true });
+    if(user === null)
+    {
+      res.status(400).json({success:false,message:"User Not Found" })
+      return;
+    }
+    res.status(200).json({success:true, user:user,message:"User Updated Successfully" })
+    return;
+  }catch(err){
+    let message = "Something Went Wrong";
+    if (err.name === "ValidationError") message = handleValidationError(err);
+    res.status(400).json({success:false, message })
+    return;
+  }
+}
 
 module.exports = {
   handleRegistration,
   handleDelete,
+  handleUpdate,
   handleLogin,
 };
