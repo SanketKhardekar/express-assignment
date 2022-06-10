@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const mongoConfig = require("../config/config");
 const validator = require("../utils/validator");
 const bcrypt = require("bcrypt");
-
+require('dotenv').config();
+const jwt= require('jsonwebtoken');
 //Database Connection
 mongoose.connect(mongoConfig.DB_URL);
 mongoose.connection.on("connected", () => {
@@ -84,9 +85,11 @@ const handleLogin = async (req, res) => {
       res.status(401).json({ success: false, message: "Incorrect Password" });
       return;
     }
+    const userData={ name:user.name,email:user.email }
+    const accessToken=jwt.sign(userData,process.env.ACCESS_TOKEN_SECRET);
     res
       .status(200)
-      .json({ success: true, message: "Login SucessFull", id: user._id });
+      .json({ success: true, message: "Login SucessFull", id: user._id, accessToken });
     return;
   } catch (err) {
     res.status(400).json({ success: false, message: "Something Went Wrong" });
