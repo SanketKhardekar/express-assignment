@@ -1,6 +1,7 @@
 const express= require('express');
 const cors= require('cors');
 const userRoute=require('./routes/user.js')
+const employeeRoute=require('./routes/employee.js')
 const app=express();
 const PORT= 3000;
 
@@ -16,7 +17,7 @@ app.use(express.urlencoded({extended:true}));
 
 //User Route
 app.use('/api/user',userRoute);
-
+app.use('/api/employee',employeeRoute);
 app.all('*',(req,res)=>{
     res.status(404).send('Page Not Found!');
 })
